@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -14,6 +15,8 @@ public class DocumentEntity {
     @Id
     private UUID id;
 
+    private String title;
+
     @Column(columnDefinition = "TEXT")
     private String text;
 
@@ -21,20 +24,28 @@ public class DocumentEntity {
     private int anchor;
     private int preferredColumn;
 
+    private Instant createdAt;
+    private Instant updatedAt;
+
+
     protected DocumentEntity() {
     }
 
-    public DocumentEntity(UUID id, String text, int cursor, int anchor, int preferredColumn) {
+    public DocumentEntity(UUID id, String title, String text, int cursor, int anchor, int preferredColumn, Instant createdAt, Instant updatedAt) {
         this.id = id;
+        this.title = title;
         this.text = text;
         this.cursor = cursor;
         this.anchor = anchor;
         this.preferredColumn = preferredColumn;
+
     }
 
     public UUID getId() {
         return id;
     }
+
+    public String getTitle() {return title; }
 
     public String getText() {
         return text;
@@ -52,6 +63,14 @@ public class DocumentEntity {
         return preferredColumn;
     }
 
+    public Instant getCreatedAt() {return createdAt; }
+
+    public Instant getUpdatedAt() {return updatedAt; }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setText(String text) {
         this.text = text;
     }
@@ -67,4 +86,8 @@ public class DocumentEntity {
     public void setPreferredColumn(int preferredColumn) {
         this.preferredColumn = preferredColumn;
     }
+
+    public void setUpdatedAt(Instant updatedAt) {this.updatedAt = updatedAt; }
+
+
 }

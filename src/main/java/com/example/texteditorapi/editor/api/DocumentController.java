@@ -1,10 +1,11 @@
 package com.example.texteditorapi.editor.api;
 
+import com.example.texteditorapi.editor.persistence.DocumentEntity;
 import com.example.texteditorapi.editor.DocumentService;
-import com.example.texteditorapi.editor.TextBuffer;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @RestController
@@ -18,32 +19,47 @@ public final class DocumentController {
     }
 
     @PostMapping
-    public DocumentStateResponse create() {
-        UUID id = service.create("");
-        return toResponse(id, service.get(id));
+    public DocumentStateResponse create(@Valid @RequestBody CreateDocumentRequest req) {
+        UUID id = service.create(req.title(), req.text());
+        DocumentEntity entity = service.get(id);
+        return toResponse(entity);
     }
 
     @GetMapping("/{id}")
     public DocumentStateResponse get(@PathVariable UUID id) {
-        return toResponse(id, service.get(id));
+        DocumentEntity entity = service.get(id);
+        return toResponse(entity);
     }
 
     @PostMapping("/{id}/commands")
     public DocumentStateResponse apply(@PathVariable UUID id, @Valid @RequestBody CommandRequest req) {
         var cmd = CommandFactory.from(req);
-        TextBuffer.Snapshot s = service.apply(id, cmd);
-        return toResponse(id, s);
+        service.apply(id, cmd);
+        DocumentEntity entity = service.get(id);
+        return toResponse(entity);
     }
 
-    private static DocumentStateResponse toResponse(UUID id, TextBuffer.Snapshot s) {
-        return new DocumentStateResponse(id, s.text, s.cursor, s.anchor, s.preferredColumn);
+    private static DocumentStateResponse toResponse(DocumentEntity e) {
+        return new DocumentStateResponse(
+                e.getId(),
+                e.getTitle(),
+                e.getText(),
+                e.getCursor(),
+                e.getAnchor(),
+                e.getPreferredColumn(),
+                e.getCreatedAt(),
+                e.getUpdatedAt()
+        );
     }
 
     public record DocumentStateResponse(
             UUID id,
+            String title,
             String text,
             int cursor,
             int anchor,
-            int preferredColumn
+            int preferredColumn,
+            Instant createdAt,
+            Instant updatedAt
     ) {}
 }

@@ -6,6 +6,7 @@ import com.example.texteditorapi.editor.persistence.DocumentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -18,44 +19,47 @@ public class DocumentService {
         this.repo = repo;
     }
 
-    /** Create a new empty document. */
     @Transactional
     public UUID create() {
-        return create("");
+        return create("Untitled document", "");
+    }
+
+    @Transactional
+    public UUID create(String initialText) {
+        return create("Untitled document", initialText);
     }
 
     /** Create a new document with initial text. */
     @Transactional
-    public UUID create(String initialText) {
+    public UUID create(String title, String initialText) {
         UUID id = UUID.randomUUID();
+        Instant now = Instant.now();
 
-        TextBuffer buffer = new TextBuffer(initialText);
+        String finalTitle = (title == null || title.isBlank()) ? "Untitled document" : title;
+        String finalText = (initialText == null) ? "" : initialText;
+
+        TextBuffer buffer = new TextBuffer(finalText);
         TextBuffer.Snapshot snap = buffer.snapshot();
 
         DocumentEntity entity = new DocumentEntity(
                 id,
+                finalTitle,
                 snap.text,
                 snap.cursor,
                 snap.anchor,
-                snap.preferredColumn
+                snap.preferredColumn,
+                now,
+                now
         );
 
         repo.save(entity);
         return id;
     }
 
-    /** Get current snapshot of a document (for returning to UI/REST). */
     @Transactional(readOnly = true)
-    public TextBuffer.Snapshot get(UUID id) {
-        DocumentEntity entity = repo.findById(id)
+    public DocumentEntity get(UUID id) {
+        return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No document with id: " + id));
-
-        return new TextBuffer.Snapshot(
-                entity.getText(),
-                entity.getCursor(),
-                entity.getAnchor(),
-                entity.getPreferredColumn()
-        );
     }
 
     /** Apply one command to a document and return the updated snapshot. */
@@ -83,6 +87,7 @@ public class DocumentService {
         entity.setCursor(updated.cursor);
         entity.setAnchor(updated.anchor);
         entity.setPreferredColumn(updated.preferredColumn);
+        entity.setUpdatedAt(Instant.now());
 
         repo.save(entity);
 
