@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +33,18 @@ public final class DocumentController {
         return toResponse(entity);
     }
 
+    @GetMapping
+    public List<DocumentSummaryResponse> getAll() {
+        List<DocumentSummaryResponse> summaries = new ArrayList<>();
+        List<DocumentEntity> documents = service.getAll();
+
+        for (DocumentEntity document : documents) {
+            summaries.add(toSummaryResponse(document));
+        }
+
+        return summaries;
+    }
+
     @PostMapping("/{id}/commands")
     public DocumentStateResponse apply(@PathVariable UUID id, @Valid @RequestBody CommandRequest req) {
         var cmd = CommandFactory.from(req);
@@ -52,6 +66,15 @@ public final class DocumentController {
         );
     }
 
+    private static DocumentSummaryResponse toSummaryResponse(DocumentEntity e) {
+        return new DocumentSummaryResponse(
+                e.getId(),
+                e.getTitle(),
+                e.getCreatedAt(),
+                e.getUpdatedAt()
+        );
+    }
+
     public record DocumentStateResponse(
             UUID id,
             String title,
@@ -62,4 +85,12 @@ public final class DocumentController {
             Instant createdAt,
             Instant updatedAt
     ) {}
+
+    public record DocumentSummaryResponse(
+            UUID id,
+            String title,
+            Instant createdAt,
+            Instant updatedAt
+    ) {}
+
 }

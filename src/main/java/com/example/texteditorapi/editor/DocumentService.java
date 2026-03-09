@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -60,6 +61,11 @@ public class DocumentService {
     public DocumentEntity get(UUID id) {
         return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No document with id: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<DocumentEntity> getAll() {
+        return repo.findAll();
     }
 
     /** Apply one command to a document and return the updated snapshot. */

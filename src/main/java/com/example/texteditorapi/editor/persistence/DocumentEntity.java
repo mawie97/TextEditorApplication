@@ -15,18 +15,26 @@ public class DocumentEntity {
     @Id
     private UUID id;
 
+    @Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String text;
 
-    private int cursor;
-    private int anchor;
-    private int preferredColumn;
-
+    @Column(nullable = false)
     private Instant createdAt;
+
+    @Column(nullable = false)
     private Instant updatedAt;
 
+    @Column(nullable = false)
+    private int cursor;
+
+    @Column(nullable = false)
+    private int anchor;
+
+    @Column(nullable = false)
+    private int preferredColumn;
 
     protected DocumentEntity() {
     }
@@ -38,7 +46,8 @@ public class DocumentEntity {
         this.cursor = cursor;
         this.anchor = anchor;
         this.preferredColumn = preferredColumn;
-
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public UUID getId() {
