@@ -1,7 +1,7 @@
 package com.example.texteditorapi.editor.api;
 
 import com.example.texteditorapi.editor.persistence.DocumentEntity;
-import com.example.texteditorapi.editor.DocumentService;
+import com.example.texteditorapi.editor.service.DocumentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 

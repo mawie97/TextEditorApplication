@@ -1,5 +1,6 @@
-package com.example.texteditorapi.editor;
+package com.example.texteditorapi.editor.service;
 
+import com.example.texteditorapi.editor.TextBuffer;
 import com.example.texteditorapi.editor.commands.Command;
 import com.example.texteditorapi.editor.persistence.DocumentEntity;
 import com.example.texteditorapi.editor.persistence.DocumentRepository;
