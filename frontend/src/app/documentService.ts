@@ -9,19 +9,19 @@ export class DocumentService {
     constructor(private http: HttpClient){}
 
       getAll() {
-        return this.http.get<DocumentSummary[]>('http://localhost:8080/api/documents');
+        return this.http.get<DocumentSummary[]>('/api/documents');
       }
 
       get(id: string) {
-        return this.http.get<Document>(`http://localhost:8080/api/documents/${id}`)
+        return this.http.get<Document>(`/api/documents/${id}`)
       }
 
       sendCommand(id: string, command: Command) {
-        return this.http.post<Document>(`http://localhost:8080/api/documents/${id}/commands`, command)
+        return this.http.post<Document>(`/api/documents/${id}/commands`, command)
       }
 
       create(title: string, text: string) {
-        return this.http.post<Document>(`http://localhost:8080/api/documents`, { title, text })
+        return this.http.post<Document>(`/api/documents`, { title, text })
       }
 
 
