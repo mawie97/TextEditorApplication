@@ -6,13 +6,6 @@ public final class CommandFactory {
     private CommandFactory() {}
 
     public static Command from(CommandRequest r) {
-        if (r == null) {
-            throw new IllegalArgumentException("request cannot be null");
-        }
-        if (r.type() == null) {
-            throw new IllegalArgumentException("type cannot be null");
-        }
-
         return switch (r.type()) {
             case INSERT -> new InsertCommand(requireText(r));
 

@@ -72,8 +72,6 @@ public class DocumentService {
     /** Apply one command to a document and return the updated snapshot. */
     @Transactional
     public TextBuffer.Snapshot apply(UUID id, Command cmd) {
-        if (cmd == null) throw new IllegalArgumentException("cmd cannot be null");
-
         DocumentEntity entity = repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No document with id: " + id));
 

@@ -110,7 +110,6 @@ public final class TextBuffer {
     }
 
     public TextBuffer(String initialText) {
-//        this.text = new StringBuilder(initialText == null ? "" : initialText);
         if (initialText == null) {
             throw new IllegalArgumentException("initialText cannot be null");
         }

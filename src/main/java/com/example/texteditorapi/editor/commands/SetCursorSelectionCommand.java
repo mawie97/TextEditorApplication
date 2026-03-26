@@ -6,7 +6,6 @@ public final class SetCursorSelectionCommand implements Command {
     private final int pos;
 
     public SetCursorSelectionCommand(int pos) {
-        if (pos < 0) throw new IllegalArgumentException("pos cannot be negative");
         this.pos = pos;
     }
 

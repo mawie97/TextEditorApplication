@@ -6,7 +6,6 @@ public final class InsertCommand implements Command {
     private final String text;
 
     public InsertCommand(String text) {
-        if (text == null) throw new IllegalArgumentException("text cannot be null");
         this.text = text;
     }
 
