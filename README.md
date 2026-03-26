@@ -83,4 +83,3 @@ The app will be available at `http://localhost:8080`.
 
 - **No authentication** — all users share the same documents. Authentication is a planned future addition.
 - **Undo/redo** — not functional via the API. `TextBuffer` history is not persisted across requests; each command is applied to a fresh buffer reconstructed from the saved snapshot.
-- **Newline** — not functional via the API.
