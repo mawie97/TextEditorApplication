@@ -1,110 +1,85 @@
-# Text Editor API
+# Text Editor
+
+A full-stack text editor application built as a portfolio project to explore modern web development practices — from backend design and database management to frontend development and cloud deployment.
+
+**Live demo:** https://texteditorapi-production.up.railway.app
+
+---
 
 ## Overview
 
-This project is a backend API for a text editor built with **Java and Spring Boot**.  
-It exposes REST endpoints for creating and editing documents, persists data in **PostgreSQL**, and uses **Flyway** for database migrations.
+The app lets users create and edit documents through a browser-based text editor. It supports keyboard-driven editing commands (move cursor, select text, delete, etc.) and persists all documents to a database.
 
-The project focuses on backend design concepts such as clean architecture, persistence, testing, and containerized development. It was developed as a portfolio project to strengthen practical experience with modern Java backend technologies.
-
----
-
-## Motivation
-
-The goal of this project was to build a structured backend application that demonstrates backend engineering practices commonly used in production systems.
-
-The project focuses on:
-
-- Designing RESTful APIs
-- Structuring a maintainable backend architecture
-- Persisting application state with relational databases
-- Managing schema evolution with database migrations
-- Writing automated tests for both core logic and integration scenarios
-- Running services in a containerized environment
-
-It also serves as a foundation for future expansion with a frontend client.
-
----
-
-## Features
-
-- Create and retrieve documents through a REST API
-- Modify document content through editing operations
-- Persistent storage using PostgreSQL
-- Database schema versioning with Flyway migrations
-- Clean separation between API, service, and persistence layers
-- Unit tests for core logic
-- Integration tests for API and database interactions
-- Docker-based development environment
+The project covers the full development lifecycle: backend API design, frontend development, containerization, and deployment to a cloud platform.
 
 ---
 
 ## Tech Stack
 
+### Frontend
+- Angular (TypeScript)
+
 ### Backend
-- Java
+- Java 17
 - Spring Boot
 - Spring Web
 - Spring Data JPA / Hibernate
 
 ### Database
 - PostgreSQL
-- Flyway
+- Flyway (schema migrations)
 
 ### Testing
 - JUnit
 - Testcontainers
 
 ### Infrastructure
-- Docker
+- Docker (multi-stage build)
 - Docker Compose
 - Gradle
+- Railway (cloud deployment)
 
 ---
 
-## Architecture Overview
+## Architecture
 
-The project follows a layered backend structure that separates responsibilities between the API layer, business logic, and persistence.
+The backend follows a layered architecture with clear separation of responsibilities:
 
-### API Layer
+- **API layer** (`api/`) — REST controllers, request/response models, global error handling
+- **Service layer** (`service/`) — business logic, coordinates editing operations with persistence
+- **Persistence layer** (`persistence/`) — JPA entities and Spring Data repositories
+- **Editing model** (`TextBuffer`, `commands/`) — command pattern for text editing operations
 
-The `api` package contains REST controllers responsible for handling HTTP requests and mapping them to service operations.
+The frontend is an Angular single-page application served as static files directly by Spring Boot. There is no separate web server.
 
-Responsibilities include:
+### REST API
 
-- Request validation
-- HTTP response handling
-- Translating HTTP requests into calls to the application's business logic.
-
-### Service Layer
-
-The `service` package contains the application’s business logic.  
-Services coordinate operations between the domain model and the persistence layer.
-
-Responsibilities include:
-
-- Managing the creation, retrieval, modification, and deletion of documents
-- Coordinating editing operations
-- Persisting document changes
-
-### Persistence Layer
-
-The `persistence` package handles database interaction using **Spring Data JPA**.
-
-Responsibilities include:
-
-- Entity definitions
-- Repository interfaces
-- Mapping domain state to database tables
-
-### Editing Model
-
-The core editing logic is implemented through a command-based approach.
-
-The `commands` package contains operations representing text editing actions. These commands modify the internal state of the text buffer while keeping editing logic encapsulated and testable.
-
-The `TextBuffer` class acts as the core editing model responsible for managing document content and applying editing operations.
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/documents` | Create a document |
+| `GET` | `/api/documents` | List all documents |
+| `GET` | `/api/documents/{id}` | Get a document |
+| `POST` | `/api/documents/{id}/commands` | Apply an editing command |
 
 ---
 
-## Project Structure
+## Running Locally
+
+Requires Docker.
+
+```bash
+# Start the full stack (API + PostgreSQL)
+docker compose up
+
+# Run tests (requires Docker for Testcontainers)
+./gradlew test
+```
+
+The app will be available at `http://localhost:8080`.
+
+---
+
+## Known Limitations
+
+- **No authentication** — all users share the same documents. Authentication is a planned future addition.
+- **Undo/redo** — not functional via the API. `TextBuffer` history is not persisted across requests; each command is applied to a fresh buffer reconstructed from the saved snapshot.
